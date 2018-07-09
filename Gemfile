@@ -15,6 +15,9 @@ gem 'russian'
 group :development, :test do
   gem 'sqlite3'
   gem 'byebug'
+  gem 'rspec-rails'
+  gem 'shoulda-matchers'
+  gem 'factory_bot_rails'
 end
 
 group :production do
