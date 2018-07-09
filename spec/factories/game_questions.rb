@@ -5,7 +5,7 @@ FactoryBot.define do
     c 2
     d 1
 
-    association :user
     association :game
+    association :question
   end
 end
