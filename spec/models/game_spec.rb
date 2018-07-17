@@ -4,7 +4,7 @@ require 'support/my_spec_helper'
 RSpec.describe Game, type: :model do
 
   let(:user) { FactoryBot.create(:user) }
-  let(:game_w_questions) { FactoryBot.create(:game_with_factory, user: user) }
+  let(:game_w_questions) { FactoryBot.create(:game_with_question, user: user) }
 
   context 'Game Factory' do
     it 'Game.create_game_for_user! new correct game' do
@@ -49,5 +49,10 @@ RSpec.describe Game, type: :model do
       expect(game_w_questions.status).to eq(:in_progress)
       expect(game_w_questions.finished?).to be_falsey
     end
+  end
+
+  context 'take money' do
+
+
   end
 end
