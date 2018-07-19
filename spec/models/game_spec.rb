@@ -138,4 +138,22 @@ RSpec.describe Game, type: :model do
       expect(game_w_questions.status).to eq(:money)
     end
   end
+
+  #Напишите тесты на методы current_game_question и previous_level модели Game.
+
+  describe '#current_game_question' do
+    it 'return game question corresponding game current level' do
+      game = FactoryBot.create(:game_with_questions, current_level: 8)
+      result = game.current_game_question
+      expect(result).to eq(game.game_questions[8])
+    end
+  end
+
+  describe '#previous_level' do
+    it "return current level-1" do
+      game = FactoryBot.create(:game_with_questions, current_level: 8)
+      result = game.previous_level
+      expect(result).to eq 7
+    end
+  end
 end
