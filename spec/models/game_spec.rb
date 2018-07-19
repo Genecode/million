@@ -4,8 +4,8 @@ require 'support/my_spec_helper'
 RSpec.describe Game, type: :model do
   let(:user) { FactoryBot.create(:user) }
   let(:game_w_questions) { FactoryBot.create(:game_with_questions, user: user) } #, user: user)
-  context 'Game Factory' do
 
+  context 'Game Factory' do
     it 'Game.create_game_for_user! new correct game' do
       generate_questions(60)
       game = nil
@@ -33,7 +33,6 @@ RSpec.describe Game, type: :model do
   end
 
   context 'game mechanic' do
-
     it 'answer correct continues' do
       level = game_w_questions.current_level
       q = game_w_questions.current_game_question
@@ -50,18 +49,25 @@ RSpec.describe Game, type: :model do
     end
   end
 
-  context 'take money' do
-    #TODO
+  describe '#take money!' do
+    it 'finishes the game' do
+      q = game_w_questions.current_game_question
+      game_w_questions.answer_current_question!(q.correct_answer_key)
+      game_w_questions.take_money!
+
+      prize = game_w_questions.prize
+      expect(prize).to be > 0
+
+      # проверяем что закончилась игра и пришли деньги игроку
+      expect(game_w_questions.status).to eq :money
+      expect(game_w_questions.finished?).to be_truthy
+      expect(user.balance).to eq prize
+    end
   end
-#Напишите группу тестов на метод answer_current_question! модели Game.
-#Рассмотрите случаи, когда ответ правильный, неправильный, последний (на миллион) и
-#Когда ответ дан после истечения времени.
+
   describe '#answer_current_question!' do
 
     it 'return true for right answer' do
-      #Arrange Act Assert
-      #game_w_questions = FactoryBot.create(:game_with_questions)
-      #проверку состояния не делаем, т.к. проверили это в механике
       expect(game_w_questions.answer_current_question!('d')).to be_truthy
     end
     it 'return false for all wrong answers' do
@@ -98,14 +104,38 @@ RSpec.describe Game, type: :model do
         game_w_questions.answer_current_question!('d')
         expect(game_w_questions.is_failed).to be_truthy
       end
-
       it 'return nearest fireproof prize' do
         game_w_questions.answer_current_question!('d')
         expect(game_w_questions.prize).to eq 1_000
       end
     end
-
   end
 
+  context '.status' do
+    # перед каждым тестом "завершаем игру"
+    before(:each) do
+      game_w_questions.finished_at = Time.now
+      expect(game_w_questions.finished?).to be_truthy
+    end
 
+    it ':won' do
+      game_w_questions.current_level = Question::QUESTION_LEVELS.max + 1
+      expect(game_w_questions.status).to eq(:won)
+    end
+
+    it ':fail' do
+      game_w_questions.is_failed = true
+      expect(game_w_questions.status).to eq(:fail)
+    end
+
+    it ':timeout' do
+      game_w_questions.created_at = 1.hour.ago
+      game_w_questions.is_failed = true
+      expect(game_w_questions.status).to eq(:timeout)
+    end
+
+    it ':money' do
+      expect(game_w_questions.status).to eq(:money)
+    end
+  end
 end
