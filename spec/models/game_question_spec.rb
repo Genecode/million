@@ -24,4 +24,15 @@ RSpec.describe GameQuestion, type: :model do
       expect(game_question.level).to eq(game_question.question.level)
     end
   end
+
+  #Напишите тесты на метод correct_answer_key модели GameQuestion.
+  describe '#correct_answer_key' do
+    # def correct_answer_key
+    #   {a => 'a', b => 'b', c => 'c', d => 'd'}[1]
+    # end
+    # factory a: 2, b: 1, c: 4, d: 3
+    it 'return key' do
+      expect(game_question.correct_answer_key).to eq('b')
+    end
+  end
 end
