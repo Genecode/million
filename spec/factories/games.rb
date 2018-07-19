@@ -7,7 +7,7 @@ FactoryBot.define do
     is_failed false
     prize 0
 
-    factory :game_with_factory do
+    factory :game_with_questions do
       #делаем с вопросами
       after(:build) do |game|
         15.times do |i|
