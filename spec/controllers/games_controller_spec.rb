@@ -83,6 +83,33 @@ RSpec.describe GamesController, type: :controller do
       expect(flash.empty?).to be_truthy # удачный ответ не заполняет flash
     end
 
+    it 'take money' do
+      game_w_questions.update_attribute(:current_level, 2)
+      put :take_money, id: game_w_questions.id
+      game = assigns(:game)
+      expect(game.prize).to eq(200)
+
+      # пользователь изменился в базе, надо в коде перезагрузить!
+      user.reload
+      expect(user.balance).to eq(200)
+
+      expect(game.finished?).to be_truthy
+      expect(response).to redirect_to(user_path(user))
+      expect(flash[:warning]).to be
+    end
+
+    # который проверяет, что пользователь не может начать две игры. Если он начинает вторую, его редиректит на первую.
+    it 'user cant create 2 games together' do
+      expect(game_w_questions.finished?).to be_falsey
+
+      expect { post :create }.to change(Game, :count).by(0)
+      game = assigns(:game)
+      expect(game).to be_nil
+      expect(response).to redirect_to(game_path(game_w_questions))
+      expect(flash[:alert]).to be
+    end
+
+
     # тест на отработку "помощи зала"
     it 'uses audience help' do
       # сперва проверяем что в подсказках текущего вопроса пусто

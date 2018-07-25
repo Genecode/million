@@ -7,7 +7,7 @@ Rails.application.routes.draw do
   resources :users, only: [:index, :show]
 
   resources :games, only: [:create, :show] do
-    put 'answer', on: :member # доп. метод ресурса - ответ на текущий вопро
+    put 'answer', on: :member # доп. метод ресурса - ответ на текущий вопроc
     put 'take_money', on: :member # доп. метод ресурса - игрок берет деньги
     put 'help', on: :member # помощь зала
   end
