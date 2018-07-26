@@ -46,6 +46,17 @@ RSpec.describe GamesController, type: :controller do
     # перед каждым тестом в группе
     before(:each) { sign_in user } # логиним юзера user с помощью спец. Devise метода sign_in
 
+    # который проверяет случай "неправильный ответ игрока".
+    it 'wrong answer' do
+      game_w_questions.update_attribute(:current_level, 8)
+      put :answer, id: game_w_questions.id, letter: 'a'
+      game = assigns(:game)
+
+      expect(game.finished?).to be_truthy
+      expect(game.prize).to eq(1000) #fireproof
+      expect(response).to redirect_to(user_path(user))
+      expect(flash[:alert]).to include("1 000")
+    end
     # юзер может создать новую игру
     it 'creates game' do
       # сперва накидаем вопросов, из чего собирать новую игру
