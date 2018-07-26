@@ -68,7 +68,9 @@ RSpec.describe Game, type: :model do
 
     context 'when last rigth answer' do
       #можно ли вместо 14 указать - Question::QUESTION_LEVELS.max?
-      let(:game_w_questions) { FactoryBot.create(:game_with_questions, current_level: 14) }
+      let(:game_w_questions) do  FactoryBot.create(:game_with_questions, current_level: 14,
+                                                   user: user)
+      end
 
       it 'won game' do
         game_w_questions.answer_current_question!('d')
@@ -77,6 +79,10 @@ RSpec.describe Game, type: :model do
       it 'get max prize' do
         game_w_questions.answer_current_question!('d')
         expect(game_w_questions.prize).to eq 1_000_000
+        expect(game_w_questions.finished?).to be_truthy
+      end
+      it 'append prize to user balance' do
+        expect { game_w_questions.answer_current_question!('d') }.to change { user.balance }.by(1_000_000)
       end
     end
 

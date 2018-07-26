@@ -49,14 +49,16 @@ RSpec.describe GamesController, type: :controller do
     # который проверяет случай "неправильный ответ игрока".
     it 'wrong answer' do
       game_w_questions.update_attribute(:current_level, 8)
+      correct_answer = game_w_questions.current_game_question.correct_answer
+
       put :answer, id: game_w_questions.id, letter: 'a'
       game = assigns(:game)
 
       expect(game.finished?).to be_truthy
-      expect(game.prize).to eq(1000) #fireproof
-      expect(game.is_failed).to be_truthy
+      expect(response.status).to eq(302)
       expect(response).to redirect_to(user_path(user))
-      expect(flash[:alert]).to include("1 000")
+      expect(flash[:alert]).to eq("Правильный ответ: #{correct_answer}. " \
+        "Игра закончена, ваш приз 1 000 ₽")
     end
     # юзер может создать новую игру
     it 'creates game' do
