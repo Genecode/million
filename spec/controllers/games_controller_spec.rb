@@ -18,7 +18,7 @@ RSpec.describe GamesController, type: :controller do
   let(:game_w_questions) { FactoryBot.create(:game_with_questions, user: user) }
 
   # группа тестов для незалогиненного юзера (Анонимус)
-  context 'Anon' do
+  context 'when Anon' do
     # из экшена show анона посылаем
     it 'kick from #show' do
       # вызываем экшен
@@ -28,10 +28,21 @@ RSpec.describe GamesController, type: :controller do
       expect(response).to redirect_to(new_user_session_path) # devise должен отправить на логин
       expect(flash[:alert]).to be # во flash должен быть прописана ошибка
     end
+
+    it 'can`t #create' do
+      post  :create
+      game = assigns(:game)
+
+      expect(response.status).not_to  eq(200)
+      expect(response).to redirect_to(new_user_session_path)
+      expect(flash[:alert]).to be
+      expect(game).to be_nil
+    end
+
   end
 
   # группа тестов на экшены контроллера, доступных залогиненным юзерам
-  context 'Usual user' do
+  context 'when Usual user' do
     # перед каждым тестом в группе
     before(:each) { sign_in user } # логиним юзера user с помощью спец. Devise метода sign_in
 
