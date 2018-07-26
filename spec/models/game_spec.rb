@@ -32,23 +32,6 @@ RSpec.describe Game, type: :model do
     end
   end
 
-  context 'game mechanic' do
-    it 'answer correct continues' do
-      level = game_w_questions.current_level
-      q = game_w_questions.current_game_question
-      expect(game_w_questions.status).to eq(:in_progress)
-
-      game_w_questions.answer_current_question!(q.correct_answer_key)
-
-      expect(game_w_questions.current_level).to eq(level + 1)
-
-      expect(game_w_questions.current_game_question).not_to eq q
-
-      expect(game_w_questions.status).to eq(:in_progress)
-      expect(game_w_questions.finished?).to be_falsey
-    end
-  end
-
   describe '#take money!' do
     it 'finishes the game' do
       q = game_w_questions.current_game_question
@@ -66,17 +49,21 @@ RSpec.describe Game, type: :model do
   end
 
   describe '#answer_current_question!' do
-
     it 'return true for right answer' do
-      expect(game_w_questions.answer_current_question!('d')).to be_truthy
+      q = game_w_questions.current_game_question
+      expect(game_w_questions.status).to eq(:in_progress)
+      expect(game_w_questions.answer_current_question!(q.correct_answer_key)).to be_truthy
+
+      expect(game_w_questions.status).to eq(:in_progress)
+      expect { game_w_questions.answer_current_question!(q.correct_answer_key) }.to change { game_w_questions.current_level }.by(1)
+      expect(game_w_questions.current_game_question).not_to eq q
+      expect(game_w_questions.finished?).to be_falsey
     end
-    it 'return false for all wrong answers' do
-      %w[a, b, c].each do |element|
-        game = FactoryBot.create(:game_with_questions)
-        expect(game.status).to eq(:in_progress)
-        expect(game.answer_current_question!(element)).to be_falsey
-        expect(game.status).to eq(:fail)
-      end
+    it 'return false if  wrong answer' do
+        expect(game_w_questions.status).to eq(:in_progress)
+        expect(game_w_questions.answer_current_question!('a')).to be_falsey
+        expect(game_w_questions.finished?).to be_truthy
+        expect(game_w_questions.status).to eq(:fail)
     end
 
     context 'when last rigth answer' do
