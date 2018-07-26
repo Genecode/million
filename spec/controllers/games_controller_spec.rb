@@ -35,7 +35,7 @@ RSpec.describe GamesController, type: :controller do
 
       expect(response.status).not_to  eq(200)
       expect(response).to redirect_to(new_user_session_path)
-      expect(flash[:alert]).to be
+      expect(flash[:alert]).to eq('Вам необходимо войти в систему или зарегистрироваться.')
       expect(game).to be_nil
     end
 
