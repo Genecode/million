@@ -54,6 +54,7 @@ RSpec.describe GamesController, type: :controller do
 
       expect(game.finished?).to be_truthy
       expect(game.prize).to eq(1000) #fireproof
+      expect(game.is_failed).to be_truthy
       expect(response).to redirect_to(user_path(user))
       expect(flash[:alert]).to include("1 000")
     end
