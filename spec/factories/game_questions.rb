@@ -5,6 +5,8 @@ FactoryBot.define do
     c 2
     d 1
 
+    help_hash = {}
+
     association :game
     association :question
   end

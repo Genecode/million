@@ -27,12 +27,26 @@ RSpec.describe GameQuestion, type: :model do
 
   #Напишите тесты на метод correct_answer_key модели GameQuestion.
   describe '#correct_answer_key' do
-    # def correct_answer_key
-    #   {a => 'a', b => 'b', c => 'c', d => 'd'}[1]
-    # end
+    # {a => 'a', b => 'b', c => 'c', d => 'd'}[1]
     # factory a: 2, b: 1, c: 4, d: 3
     it 'return key' do
       expect(game_question.correct_answer_key).to eq('b')
+    end
+  end
+
+  # Напишите тест на метод help_hash
+  describe '.help_hash' do
+    it 'correct .help_hash' do
+      expect(game_question.help_hash).to eq({})
+
+      # добавляем пару ключей
+      game_question.help_hash[:some_key1] = 'blabla1'
+      game_question.help_hash['some_key2'] = 'blabla2'
+
+      expect(game_question.save).to be_truthy
+
+      gq = GameQuestion.find(game_question.id)
+      expect(gq.help_hash).to eq({some_key1: 'blabla1', 'some_key2' => 'blabla2'})
     end
   end
 end
