@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 gem 'rails', '~> 4.2.6'
 
-gem 'devise', '~> 4.1.1'
+gem 'devise'
 gem 'devise-i18n'
 
 gem 'uglifier', '>= 1.3.0'
@@ -15,9 +15,17 @@ gem 'russian'
 group :development, :test do
   gem 'sqlite3'
   gem 'byebug'
-  gem 'rspec-rails'
-  gem 'shoulda-matchers'
+  gem 'rspec-rails', '~> 3.4'
   gem 'factory_bot_rails'
+  gem 'shoulda-matchers'
+end
+
+# Гемы для интегрального тестирования
+# capybara - эмулирует действия пользователя в rspec
+# launchy помогает смотреть страницы в браузере
+group :test do
+  gem 'capybara'
+  gem 'launchy'
 end
 
 group :production do
