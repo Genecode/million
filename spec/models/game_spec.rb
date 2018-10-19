@@ -66,7 +66,7 @@ RSpec.describe Game, type: :model do
         expect(game_w_questions.status).to eq(:fail)
     end
 
-    context 'when last rigth answer' do
+    context 'whn last rigth answer' do
       #можно ли вместо 14 указать - Question::QUESTION_LEVELS.max?
       let(:game_w_questions) do  FactoryBot.create(:game_with_questions, current_level: 14,
                                                    user: user)
