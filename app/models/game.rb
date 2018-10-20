@@ -179,38 +179,35 @@ class Game < ActiveRecord::Base
   # help_type = :fifty_fifty | :audience_help | :friend_call
   def use_help(help_type)
     case help_type
-    # when :fifty_fifty
-    #   unless fifty_fifty_used
-    #     # ActiveRecord метод toggle! переключает булевое поле сразу в базе
-    #     toggle!(:fifty_fifty_used)
-    #     current_game_question.add_fifty_fifty
-    #     return true
-    #   end
+    when :fifty_fifty
+      unless fifty_fifty_used
+        # ActiveRecord метод toggle! переключает булевое поле сразу в базе
+        toggle!(:fifty_fifty_used)
+        current_game_question.add_fifty_fifty
+        return true
+      end
       when :audience_help
         unless audience_help_used
           toggle!(:audience_help_used)
           current_game_question.add_audience_help
           return true
         end
-    # when :friend_call
-    #   unless friend_call_used
-    #     toggle!(:friend_call_used)
-    #     current_game_question.add_friend_call
-    #     return true
-    #   end
+    when :friend_call
+      unless friend_call_used
+        toggle!(:friend_call_used)
+        current_game_question.add_friend_call
+        return true
+      end
     end
 
     false
   end
-
 
   private
 
   # Метод finish_game! завершает игру. Он обновляет все нужные поля и начисляет
   # юзеру выигрыш.
   def finish_game!(amount = 0, failed = true)
-    # Оборачиваем в транзакцию — игра заканчивается и баланс юзера пополняется
-    # только вместе.
     transaction do
       self.prize = amount
       self.finished_at = Time.now
